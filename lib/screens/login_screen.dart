@@ -21,8 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late Map<String, dynamic> customerData = {};
 
   Future<void> handleLogin() async {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => MobileScreenLayout()));
+  
 
     setState(() {
       _isLoading = true;
@@ -139,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextField(
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
-                        Icons.phone,
+                        Icons.password,
                         color: Colors.green,
                       ),
                       hintText: 'Password',
