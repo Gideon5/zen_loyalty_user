@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:zen_app/resources/auth_methods.dart';
 import 'package:zen_app/responsive/mobile_screen_layout.dart';
 import 'package:zen_app/screens/home_screen.dart';
 import 'package:zen_app/screens/signup_screen.dart';
@@ -20,67 +21,84 @@ class _LoginScreenState extends State<LoginScreen> {
   late Map<String, dynamic> responseData = {};
   late Map<String, dynamic> customerData = {};
 
-  Future<void> handleLogin() async {
-  
+  // Future<void> handleLogin() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
 
+  //   try {
+  //     print('login pressed');
+  //     final String url =
+  //         'https://eloyaltyhttpendpoints.azurewebsites.net/api/validatecustomeruser';
+  //     final Map<String, dynamic> userData = {
+  //       "userName": _userNameController.text,
+  //       "password": _passwordController.text,
+  //     };
+
+  //     final response = await http.post(
+  //       Uri.parse(url),
+  //       body: jsonEncode(userData),
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       // final responseData = json.decode(response.body);
+  //       print(json.decode(response.body));
+
+  //       setState(() {
+  //         responseData = json.decode(response.body);
+  //       });
+
+  //       final int userId =
+  //           responseData['customerUser']['customer']['customerUserId'];
+  //       final String token = responseData['token'];
+
+  //       final String customerUrl =
+  //           'https://eloyaltyhttpendpoints.azurewebsites.net/api/GetCustomerUser?id=$userId&code=$token';
+  //       final customerResponse = await http.get(Uri.parse(customerUrl));
+
+  //       if (customerResponse.statusCode == 200) {
+  //         print('logged in');
+  //         setState(() {
+  //           customerData = json.decode(customerResponse.body);
+  //         });
+  //         Navigator.of(context).pushReplacement(
+  //             MaterialPageRoute(builder: (context) => MobileScreenLayout()));
+  //         // Handle successful customer data retrieval
+  //         // You can set the retrieved customer data in your state or perform any other actions here
+  //       } else {
+  //         print(
+  //             'Error fetching customer data. Status code: ${customerResponse.statusCode}');
+  //       }
+  //     } else {
+  //       print(
+  //           'Error validating customer user. Status code: ${response.statusCode}');
+  //     }
+  //   } catch (error) {
+  //     print('Error during login: $error');
+  //   } finally {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
+
+  Future<void> loginAuth() async {
     setState(() {
       _isLoading = true;
     });
+    String res = await AuthMethods().loginUser(
+        userName: _userNameController.text, password: _passwordController.text);
 
-    try {
-      print('login pressed');
-      final String url =
-          'https://eloyaltyhttpendpoints.azurewebsites.net/api/validatecustomeruser';
-      final Map<String, dynamic> userData = {
-        "userName": _userNameController.text,
-        "password": _passwordController.text,
-      };
-
-      final response = await http.post(
-        Uri.parse(url),
-        body: jsonEncode(userData),
-      );
-
-      if (response.statusCode == 200) {
-        // final responseData = json.decode(response.body);
-        print(json.decode(response.body));
-
-        setState(() {
-          responseData = json.decode(response.body);
-        });
-
-        final int userId =
-            responseData['customerUser']['customer']['customerUserId'];
-        final String token = responseData['token'];
-
-        final String customerUrl =
-            'https://eloyaltyhttpendpoints.azurewebsites.net/api/GetCustomerUser?id=$userId&code=$token';
-        final customerResponse = await http.get(Uri.parse(customerUrl));
-
-        if (customerResponse.statusCode == 200) {
-          print('logged in');
-          setState(() {
-            customerData = json.decode(customerResponse.body);
-          });
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => MobileScreenLayout()));
-          // Handle successful customer data retrieval
-          // You can set the retrieved customer data in your state or perform any other actions here
-        } else {
-          print(
-              'Error fetching customer data. Status code: ${customerResponse.statusCode}');
-        }
-      } else {
-        print(
-            'Error validating customer user. Status code: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Error during login: $error');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+    if (res == "success") {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      print("error");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -155,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 24),
                   InkWell(
-                    onTap: handleLogin,
+                    onTap: loginAuth,
                     child: Container(
                       width: double.infinity,
                       alignment: Alignment.center,

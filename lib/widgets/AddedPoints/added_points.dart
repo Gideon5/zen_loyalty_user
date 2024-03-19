@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zen_app/utils/colors.dart';
 import 'package:zen_app/widgets/AddedPoints/added_points_card.dart';
 
 class AddedPoints extends StatefulWidget {
@@ -21,6 +22,7 @@ class _AddedPointsState extends State<AddedPoints> {
     width = MediaQuery.of(context).size.width;
 
     return SizedBox(
+      width: width * 0.853,
       height: height * 0.4,
       child: hasValue
           ? ListView.builder(
@@ -29,9 +31,32 @@ class _AddedPointsState extends State<AddedPoints> {
               itemCount: listsData.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: width * 0.1),
-                  padding: EdgeInsets.all(10),
-                  child: Text('working'),
+                  // margin: EdgeInsets.symmetric(
+                  //     horizontal: width * 0.1, vertical: 5),
+                  margin: EdgeInsets.only(bottom: 15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color.fromARGB(255, 222, 232, 222)),
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("location"),
+                              SizedBox(width: width * 0.53),
+                               Text("10pts"),
+                            ],
+                          ),
+                          Text("date"),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
               },
             )
