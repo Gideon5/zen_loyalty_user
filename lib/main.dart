@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zen_app/resources/Auth_methods.dart';
 import 'package:zen_app/screens/intro_screen.dart';
 import 'package:zen_app/screens/splash_screen.dart';
+import 'package:zen_app/state/user/auth_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    BlocProvider<AuthBloc>(
+      create: (context) => AuthBloc(authMethods: AuthMethods()), // Provide an instance of AuthBloc
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,8 +24,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       routes: {
-      "/" : (context) => SplashScreen(),
-      "intro" : (context) => IntroScreen(),
+        "/": (context) => SplashScreen(),
+        "intro": (context) => IntroScreen(),
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -38,7 +46,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      
     );
   }
 }

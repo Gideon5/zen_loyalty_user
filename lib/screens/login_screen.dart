@@ -1,13 +1,11 @@
-import 'dart:convert';
-import 'dart:ffi';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zen_app/resources/auth_methods.dart';
 import 'package:zen_app/responsive/mobile_screen_layout.dart';
-import 'package:zen_app/screens/home_screen.dart';
 import 'package:zen_app/screens/signup_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zen_app/state/user/auth_bloc.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,45 +15,32 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  final AuthBloc _authBloc = AuthBloc(authMethods: AuthMethods());
 
-  Future<void> loginAuth() async {
-    setState(() {
-      _isLoading = true;
-    });
-    final authMethods = AuthMethods();
-
-    await authMethods.getToken(
-      userName: _userNameController.text,
-      password: _passwordController.text,
-    );
-
-    String res = await authMethods.loginUser(
-        userName: _userNameController.text, password: _passwordController.text);
-
-    if (res == "success") {
-      // var userToken = authMethods.token;
-
-      // print('Token: ${authMethods.token}');
-      print('Login successful');
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MobileScreenLayout()));
-    } else {
-      print("Login error");
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
+  
 
   @override
   void dispose() {
-    super.dispose();
     _userNameController.dispose();
     _passwordController.dispose();
+    _authBloc.dispose();
+    super.dispose();
+  }
+
+
+   Future<void> login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    _authBloc.login(
+      userName: _userNameController.text,
+      password: _passwordController.text,
+    );
   }
 
   Widget build(BuildContext context) {
@@ -123,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 24),
                   InkWell(
-                    onTap: loginAuth,
+                    onTap: login,
                     child: Container(
                       width: double.infinity,
                       alignment: Alignment.center,
