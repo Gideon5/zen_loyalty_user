@@ -20,6 +20,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  late Map<String, dynamic> responseData = {};
+  late Map<String, dynamic> customerData = {};
+  late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    initSharedPref();
+  }
+
+    void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
   Future<void> loginAuth() async {
     setState(() {
@@ -27,21 +40,24 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     final authMethods = AuthMethods();
 
+    
     await authMethods.getToken(
       userName: _userNameController.text,
       password: _passwordController.text,
     );
 
+    
+
     String res = await authMethods.loginUser(
         userName: _userNameController.text, password: _passwordController.text);
 
     if (res == "success") {
-      // var userToken = authMethods.token;
+      var userToken = authMethods.token;
+      prefs.setString('token', userToken);
 
-      // print('Token: ${authMethods.token}');
+      print('Token: ${authMethods.token}');
       print('Login successful');
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MobileScreenLayout()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(token: userToken)));
     } else {
       print("Login error");
     }
